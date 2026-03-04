@@ -1,0 +1,74 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg">
+  <!-- Winter sky gradient -->
+  <defs>
+    <linearGradient id="winterSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e6f3ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#cce7ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b3daff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="groundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f8ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e6ed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky -->
+  <rect width="1200" height="400" fill="url(#winterSky)"/>
+  
+  <!-- Ground with snow -->
+  <rect y="400" width="1200" height="275" fill="url(#groundGradient)"/>
+  
+  <!-- Mist/fog effect -->
+  <rect y="350" width="1200" height="100" fill="white" opacity="0.4"/>
+  
+  <!-- Oriental Pearl Tower (prominent) -->
+  <rect x="580" y="80" width="15" height="200" fill="#95a5a6"/>
+  <circle cx="587" cy="120" r="30" fill="#e74c3c"/>
+  <rect x="580" y="150" width="15" height="80" fill="#95a5a6"/>
+  <circle cx="587" cy="230" r="25" fill="#e74c3c"/>
+  <rect x="580" y="255" width="15" height="100" fill="#95a5a6"/>
+  <circle cx="587" cy="355" r="20" fill="#e74c3c"/>
+  
+  <!-- Lujiazui financial district buildings -->
+  <rect x="400" y="120" width="50" height="280" fill="#34495e"/>
+  <rect x="460" y="100" width="45" height="300" fill="#2c3e50"/>
+  <rect x="510" y="140" width="40" height="260" fill="#34495e"/>
+  <rect x="620" y="110" width="55" height="290" fill="#2c3e50"/>
+  <rect x="680" y="130" width="48" height="270" fill="#34495e"/>
+  <rect x="730" y="90" width="52" height="310" fill="#2c3e50"/>
+  <rect x="790" y="150" width="45" height="250" fill="#34495e"/>
+  
+  <!-- Shanghai Tower (tallest) -->
+  <rect x="650" y="50" width="35" height="350" fill="#2c3e50"/>
+  <polygon points="650,50 667,40 685,50 685,60 650,60" fill="#34495e"/>
+  
+  <!-- Jin Mao Tower -->
+  <rect x="700" y="80" width="30" height="320" fill="#34495e"/>
+  <rect x="705" y="75" width="20" height="10" fill="#95a5a6"/>
+  
+  <!-- Snow on buildings -->
+  <rect x="400" y="120" width="50" height="5" fill="white"/>
+  <rect x="460" y="100" width="45" height="5" fill="white"/>
+  <rect x="510" y="140" width="40" height="5" fill="white"/>
+  <rect x="620" y="110" width="55" height="5" fill="white"/>
+  <rect x="680" y="130" width="48" height="5" fill="white"/>
+  <rect x="730" y="90" width="52" height="5" fill="white"/>
+  
+  <!-- Snow particles -->
+  <circle cx="150" cy="100" r="2" fill="white" opacity="0.8"/>
+  <circle cx="300" cy="150" r="1.5" fill="white" opacity="0.7"/>
+  <circle cx="450" cy="80" r="2" fill="white" opacity="0.9"/>
+  <circle cx="600" cy="120" r="1" fill="white" opacity="0.6"/>
+  <circle cx="750" cy="90" r="1.5" fill="white" opacity="0.8"/>
+  <circle cx="900" cy="140" r="2" fill="white" opacity="0.7"/>
+  <circle cx="1050" cy="110" r="1" fill="white" opacity="0.9"/>
+  
+  <!-- Winter trees -->
+  <rect x="100" y="350" width="8" height="50" fill="#8b4513"/>
+  <circle cx="104" cy="340" r="15" fill="white" opacity="0.6"/>
+  <rect x="200" y="360" width="6" height="40" fill="#8b4513"/>
+  <circle cx="203" cy="350" r="12" fill="white" opacity="0.6"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">上海陆家嘴冬日晨景</text>
+</svg>

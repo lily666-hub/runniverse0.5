@@ -1,0 +1,59 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sky gradient -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#f7931e;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#ffd23f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#87ceeb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="riverGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4682b4;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#191970;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky -->
+  <rect width="1200" height="450" fill="url(#skyGradient)"/>
+  
+  <!-- River -->
+  <rect y="450" width="1200" height="225" fill="url(#riverGradient)"/>
+  
+  <!-- Bund buildings silhouette -->
+  <rect x="50" y="300" width="40" height="150" fill="#2c3e50"/>
+  <rect x="100" y="280" width="50" height="170" fill="#34495e"/>
+  <rect x="160" y="320" width="35" height="130" fill="#2c3e50"/>
+  <rect x="200" y="290" width="45" height="160" fill="#34495e"/>
+  <rect x="250" y="310" width="40" height="140" fill="#2c3e50"/>
+  
+  <!-- Modern skyscrapers -->
+  <rect x="800" y="150" width="60" height="300" fill="#34495e"/>
+  <rect x="870" y="100" width="50" height="350" fill="#2c3e50"/>
+  <rect x="930" y="120" width="55" height="330" fill="#34495e"/>
+  <rect x="990" y="80" width="45" height="370" fill="#2c3e50"/>
+  <rect x="1040" y="140" width="50" height="310" fill="#34495e"/>
+  <rect x="1100" y="160" width="40" height="290" fill="#2c3e50"/>
+  
+  <!-- Oriental Pearl Tower -->
+  <circle cx="900" cy="200" r="25" fill="#e74c3c"/>
+  <rect x="895" y="225" width="10" height="100" fill="#95a5a6"/>
+  <circle cx="900" cy="325" r="20" fill="#e74c3c"/>
+  <rect x="895" y="345" width="10" height="80" fill="#95a5a6"/>
+  <circle cx="900" cy="425" r="15" fill="#e74c3c"/>
+  
+  <!-- Reflections in water -->
+  <rect x="50" y="500" width="40" height="100" fill="#2c3e50" opacity="0.3"/>
+  <rect x="800" y="480" width="60" height="150" fill="#34495e" opacity="0.3"/>
+  <rect x="870" y="470" width="50" height="180" fill="#2c3e50" opacity="0.3"/>
+  
+  <!-- Clouds -->
+  <ellipse cx="200" cy="100" rx="80" ry="30" fill="white" opacity="0.7"/>
+  <ellipse cx="180" cy="90" rx="60" ry="25" fill="white" opacity="0.7"/>
+  <ellipse cx="220" cy="95" rx="50" ry="20" fill="white" opacity="0.7"/>
+  
+  <ellipse cx="600" cy="80" rx="70" ry="25" fill="white" opacity="0.6"/>
+  <ellipse cx="580" cy="70" rx="50" ry="20" fill="white" opacity="0.6"/>
+  
+  <!-- Title -->
+  <text x="600" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">上海外滩夜景</text>
+</svg>
