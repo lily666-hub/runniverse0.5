@@ -193,7 +193,7 @@ export class ImageUploadService {
     try {
       // 验证文件
       const validation = this.validateFile(file);
-      if (!validation.valid) {
+      if (!validation.isValid) {
         return {
           success: false,
           url: '',

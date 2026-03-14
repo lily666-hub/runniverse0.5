@@ -32,7 +32,15 @@ export interface ClubQueryOptions {
 export interface ClubComment {
   id: string;
   userId: string;
+  clubId: string;
   content: string;
   timestamp: string;
+  createdAt: string;
   likes: number;
+}
+
+export interface ClubActionResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
 }

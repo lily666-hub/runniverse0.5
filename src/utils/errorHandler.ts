@@ -277,13 +277,12 @@ export class ErrorHandler {
    * 内部错误记录方法
    */
   private _logError(error: RouteError): void {
-    const errorLog: RouteGenerationError = {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      timestamp: error.timestamp,
-      severity: error.severity
-    };
+    const errorLog = new RouteGenerationError(
+      error.code,
+      error.message,
+      error.severity,
+      error.details
+    );
 
     this.errorLog.push(errorLog);
 

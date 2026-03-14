@@ -1,8 +1,9 @@
-// Jest setup file for global test configuration
+// Vitest setup file for global test configuration
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock fetch globally
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 // Ensure we're in a browser-like environment
 if (typeof window !== 'undefined') {
@@ -10,11 +11,11 @@ if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'navigator', {
     value: {
       geolocation: {
-        getCurrentPosition: jest.fn(),
-        watchPosition: jest.fn(),
-        clearWatch: jest.fn()
+        getCurrentPosition: vi.fn(),
+        watchPosition: vi.fn(),
+        clearWatch: vi.fn()
       },
-      vibrate: jest.fn(),
+      vibrate: vi.fn(),
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     },
     writable: true
@@ -23,14 +24,14 @@ if (typeof window !== 'undefined') {
   // Mock performance API
   Object.defineProperty(window, 'performance', {
     value: {
-      now: jest.fn(() => Date.now()),
-      mark: jest.fn(),
-      measure: jest.fn(),
-      getEntriesByType: jest.fn(() => []),
+      now: vi.fn(() => Date.now()),
+      mark: vi.fn(),
+      measure: vi.fn(),
+      getEntriesByType: vi.fn(() => []),
       memory: {
-        usedJSHeapSize: 1000000,
-        totalJSHeapSize: 2000000,
-        jsHeapSizeLimit: 4000000
+        usedJSHeapSize: 0,
+        totalJSHeapSize: 0,
+        jsHeapSizeLimit: 0
       }
     },
     writable: true
@@ -38,194 +39,178 @@ if (typeof window !== 'undefined') {
 
   // Mock matchMedia
   Object.defineProperty(window, 'matchMedia', {
-    value: jest.fn().mockImplementation(query => ({
+    writable: true,
+    value: vi.fn().mockImplementation(query => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn()
-    })),
-    writable: true
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }))
   });
 }
 
 // Mock ResizeObserver
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn()
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn()
 }));
 
 // Mock IntersectionObserver
-global.IntersectionObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn()
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn()
 }));
 
-// Mock console methods to reduce noise in tests
-const originalConsoleError = console.error;
-const originalConsoleWarn = console.warn;
-const originalConsoleLog = console.log;
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn()
+};
+global.localStorage = localStorageMock as any;
+
+// Reset mocks before each test
+import { beforeEach, afterEach } from 'vitest';
 
 beforeEach(() => {
-  // Reset all mocks before each test
-  jest.clearAllMocks();
+  // Clear all mocks before each test
+  vi.clearAllMocks();
   
-  // Mock console methods to avoid noise in test output
-  console.error = jest.fn();
-  console.warn = jest.fn();
-  console.log = jest.fn();
+  // Reset console methods
+  console.error = vi.fn();
+  console.warn = vi.fn();
+  console.log = vi.fn();
 });
 
 afterEach(() => {
-  // Restore console methods after each test
-  console.error = originalConsoleError;
-  console.warn = originalConsoleWarn;
-  console.log = originalConsoleLog;
+  // Cleanup after each test
+  vi.clearAllTimers();
 });
 
-// Global test utilities
-export const createMockLocation = (lat: number = 31.2304, lng: number = 121.4737) => ({
-  lat,
-  lng
-});
+// Mock environment variables
+process.env.VITE_AMAP_KEY = 'test-amap-key';
+process.env.VITE_AMAP_SECURITY_CODE = 'test-security-code';
+process.env.VITE_KIMI_API_KEY = 'test-kimi-key';
+process.env.VITE_DEEPSEEK_API_KEY = 'test-deepseek-key';
 
-export const createMockUserProfile = () => ({
-  age: 25,
-  weight: 70,
-  height: 175,
-  fitnessLevel: 'intermediate' as const,
-  runningExperience: 12,
-  preferredDistance: 5,
-  healthConditions: []
-});
+// Mock AMap
+if (typeof window !== 'undefined') {
+  (window as any).AMap = {
+    Map: vi.fn().mockImplementation(() => ({
+      destroy: vi.fn(),
+      clearMap: vi.fn(),
+      setCenter: vi.fn(),
+      setZoom: vi.fn(),
+      add: vi.fn(),
+      remove: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+      plugin: vi.fn((plugins, callback) => {
+        if (callback) callback();
+      })
+    })),
+    Marker: vi.fn().mockImplementation(() => ({
+      setMap: vi.fn(),
+      setPosition: vi.fn(),
+      getPosition: vi.fn(),
+      setLabel: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn()
+    })),
+    Polyline: vi.fn().mockImplementation(() => ({
+      setMap: vi.fn(),
+      setPath: vi.fn(),
+      getPath: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn()
+    })),
+    LngLat: vi.fn().mockImplementation((lng, lat) => ({ lng, lat })),
+    Pixel: vi.fn().mockImplementation((x, y) => ({ x, y })),
+    Size: vi.fn().mockImplementation((width, height) => ({ width, height })),
+    Bounds: vi.fn().mockImplementation(() => ({
+      contains: vi.fn(),
+      getCenter: vi.fn(),
+      getNorthEast: vi.fn(),
+      getSouthWest: vi.fn()
+    })),
+    Icon: vi.fn().mockImplementation(() => ({})),
+    InfoWindow: vi.fn().mockImplementation(() => ({
+      open: vi.fn(),
+      close: vi.fn(),
+      setContent: vi.fn()
+    })),
+    Geolocation: vi.fn().mockImplementation(() => ({
+      getCurrentPosition: vi.fn((callback) => {
+        callback('complete', {
+          position: { lng: 121.5, lat: 31.2 },
+          accuracy: 10
+        });
+      })
+    })),
+    Walking: vi.fn().mockImplementation(() => ({
+      search: vi.fn((points, callback) => {
+        callback('complete', {
+          routes: [{
+            distance: 1000,
+            time: 600,
+            steps: []
+          }]
+        });
+      })
+    })),
+    Scale: vi.fn(),
+    ToolBar: vi.fn()
+  };
 
-export const createMockRoutePreferences = () => ({
-  distance: 5,
-  difficulty: 'medium' as const,
-  scenery: 'park' as const,
-  avoidTraffic: true,
-  preferSafety: true,
-  timeOfDay: 'morning' as const
-});
+  (window as any)._AMapSecurityConfig = {
+    securityJsCode: 'test-security-code'
+  };
+}
 
-export const createMockWaypoint = (name: string = 'Test Waypoint') => ({
-  name,
-  desc: `Description for ${name}`,
-  lat: 31.2304 + Math.random() * 0.01,
-  lng: 121.4737 + Math.random() * 0.01,
-  safetyScore: 8,
-  sceneryScore: 7,
-  trafficLevel: 3
-});
-
-// Mock GPS Position
-export const createMockGPSPosition = (accuracy: number = 10) => ({
-  lat: 31.2304 + Math.random() * 0.001,
-  lng: 121.4737 + Math.random() * 0.001,
-  accuracy,
-  altitude: 10 + Math.random() * 5,
-  altitudeAccuracy: 5,
-  heading: Math.random() * 360,
-  speed: Math.random() * 10,
-  timestamp: Date.now()
-});
-
-// Mock Route Data
-export const createMockRoute = () => ({
-  id: `route_${Date.now()}`,
-  distance: 5000 + Math.random() * 3000,
-  duration: 1800 + Math.random() * 900,
-  coordinates: Array.from({ length: 10 }, (_, i) => [
-    121.4737 + i * 0.001,
-    31.2304 + i * 0.001
-  ]),
-  waypoints: [createMockWaypoint('起点'), createMockWaypoint('终点')],
-  elevationProfile: Array.from({ length: 10 }, () => Math.random() * 50),
-  safetyScore: 8,
-  sceneryScore: 7
-});
-
-// Mock Performance Metrics
-export const createMockPerformanceMetrics = () => ({
-  name: 'test_operation',
-  startTime: Date.now() - 1000,
-  endTime: Date.now(),
-  duration: 1000,
-  metadata: {
+// Mock IntelligentMapService
+export const mockIntelligentMapService = {
+  initialize: vi.fn().mockResolvedValue(undefined),
+  addWaypoint: vi.fn(),
+  removeWaypoint: vi.fn(),
+  clearWaypoints: vi.fn(),
+  planRoute: vi.fn().mockResolvedValue({
     success: true,
-    deviceType: 'desktop'
-  }
-});
-
-// Mock Error
-export const createMockError = (code: string = 'TEST_ERROR') => ({
-  code,
-  message: `Test error: ${code}`,
-  timestamp: Date.now(),
-  severity: 'medium' as const,
-  context: 'test'
-});
-
-// Mock Device Info
-export const createMockDeviceInfo = () => ({
-  type: 'desktop' as const,
-  isMobile: false,
-  isTablet: false,
-  isDesktop: true,
-  isTouchDevice: false,
-  screenWidth: 1920,
-  screenHeight: 1080,
-  pixelRatio: 1,
-  orientation: 'landscape' as const
-});
-
-// Test utilities for async operations
-export const waitFor = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-export const flushPromises = () => new Promise(resolve => setImmediate(resolve));
-
-// Mock map service methods
-export const createMockMapService = () => ({
-  initialize: jest.fn().mockResolvedValue(undefined),
-  addWaypoint: jest.fn(),
-  removeWaypoint: jest.fn(),
-  clearWaypoints: jest.fn(),
-  planRoute: jest.fn().mockResolvedValue({
-    success: true,
-    route: createMockRoute()
+    route: { distance: 1000, duration: 600 }
   }),
-  drawRoute: jest.fn(),
-  clearRoute: jest.fn(),
-  startNavigation: jest.fn(),
-  stopNavigation: jest.fn(),
-  startTracking: jest.fn(),
-  stopTracking: jest.fn(),
-  setCenter: jest.fn(),
-  fitView: jest.fn(),
-  updateCurrentPosition: jest.fn(),
-  destroy: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn()
-});
+  drawRoute: vi.fn(),
+  clearRoute: vi.fn(),
+  startNavigation: vi.fn(),
+  stopNavigation: vi.fn(),
+  startTracking: vi.fn(),
+  stopTracking: vi.fn(),
+  setCenter: vi.fn(),
+  fitView: vi.fn(),
+  updateCurrentPosition: vi.fn(),
+  destroy: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn()
+};
 
-// Mock voice service methods
-export const createMockVoiceService = () => ({
-  configure: jest.fn(),
-  speak: jest.fn(),
-  speakText: jest.fn(),
-  stop: jest.fn(),
-  getVoiceQualityInfo: jest.fn().mockReturnValue({
-    quality: 'high',
-    isOffline: true,
-    currentVoice: { name: 'Test Voice' }
+// Mock VoiceNavigationService
+export const mockVoiceNavigationService = {
+  configure: vi.fn(),
+  speak: vi.fn(),
+  speakText: vi.fn(),
+  stop: vi.fn(),
+  getVoiceQualityInfo: vi.fn().mockReturnValue({
+    hasOnlineVoice: true,
+    hasOfflineVoice: false,
+    recommendedVoice: 'online'
   }),
-  setBestOfflineVoice: jest.fn(),
-  destroy: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn()
-});
+  setBestOfflineVoice: vi.fn(),
+  destroy: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn()
+};

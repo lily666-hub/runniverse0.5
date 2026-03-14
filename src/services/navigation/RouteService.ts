@@ -155,31 +155,49 @@ export class RouteService {
       params.append('waypoints', waypoints);
     }
 
-    // 发送请求到高德地图API
-    const response = await fetch(`${this.BASE_URL}/direction/walking?${params}`, {
-      timeout: 10000 // 10秒超时
-    });
+    // 发送请求到高德地图API（使用AbortController实现超时）
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
+    try {
+      const response = await fetch(`${this.BASE_URL}/direction/walking?${params}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.status === '1' && data.route && data.route.paths && data.route.paths.length > 0) {
-      const route = this.parseAmapRoute(data.route.paths[0], request.waypoints);
-      return {
-        success: true,
-        route
-      };
-    } else {
-      return {
-        success: false,
-        error: {
-          code: 'ROUTE_NOT_FOUND',
-          message: data.info || '无法找到合适的路线'
-        }
-      };
+      if (data.status === '1' && data.route && data.route.paths && data.route.paths.length > 0) {
+        const route = this.parseAmapRoute(data.route.paths[0], request.waypoints);
+        return {
+          success: true,
+          route
+        };
+      } else {
+        return {
+          success: false,
+          error: {
+            code: 'ROUTE_NOT_FOUND',
+            message: data.info || '无法找到合适的路线'
+          }
+        };
+      }
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        return {
+          success: false,
+          error: {
+            code: 'TIMEOUT',
+            message: '请求超时'
+          }
+        };
+      }
+      throw error;
     }
   }
 
@@ -224,6 +242,7 @@ export class RouteService {
           instruction: step.instruction || `步骤 ${index + 1}`,
           distance,
           duration,
+          polyline: step.polyline || '',
           road: step.road || '',
           orientation: step.orientation || '',
           action: step.action || 'straight'
@@ -232,11 +251,18 @@ export class RouteService {
         // 创建路线段
         if (step.polyline) {
           const coordinates = this.parsePolyline(step.polyline);
+          const origin = waypoints[Math.min(index, waypoints.length - 1)];
+          const destination = waypoints[Math.min(index + 1, waypoints.length - 1)];
+          
           segments.push({
             id: `segment-${index}`,
+            origin,
+            destination,
             coordinates,
             distance,
-            duration
+            duration,
+            polyline: step.polyline,
+            steps: [steps[steps.length - 1]]
           });
         }
       });
@@ -269,20 +295,25 @@ export class RouteService {
   /**
    * 计算边界框
    */
-  private static calculateBounds(segments: RouteSegment[]): [[number, number], [number, number]] {
+  private static calculateBounds(segments: RouteSegment[]): { northeast: { lat: number; lng: number }; southwest: { lat: number; lng: number } } {
     let minLng = Infinity, minLat = Infinity;
     let maxLng = -Infinity, maxLat = -Infinity;
 
     segments.forEach(segment => {
-      segment.coordinates.forEach(([lng, lat]) => {
-        minLng = Math.min(minLng, lng);
-        minLat = Math.min(minLat, lat);
-        maxLng = Math.max(maxLng, lng);
-        maxLat = Math.max(maxLat, lat);
-      });
+      if (segment.coordinates) {
+        segment.coordinates.forEach(([lng, lat]) => {
+          minLng = Math.min(minLng, lng);
+          minLat = Math.min(minLat, lat);
+          maxLng = Math.max(maxLng, lng);
+          maxLat = Math.max(maxLat, lat);
+        });
+      }
     });
 
-    return [[minLng, minLat], [maxLng, maxLat]];
+    return {
+      northeast: { lat: maxLat, lng: maxLng },
+      southwest: { lat: minLat, lng: minLng }
+    };
   }
 
   /**
@@ -313,9 +344,10 @@ export class RouteService {
         instruction: this.generateMockInstruction(from, to, i),
         distance,
         duration,
+        polyline: `${from.lng},${from.lat};${to.lng},${to.lat}`,
         road: `模拟道路 ${i + 1}`,
         orientation: this.calculateBearing(from.lat, from.lng, to.lat, to.lng),
-        action: i === 0 ? 'start' : (i === waypoints.length - 2 ? 'finish' : 'straight')
+        action: 'straight'
       };
 
       steps.push(step);
@@ -324,9 +356,13 @@ export class RouteService {
       const coordinates = this.generateMockCoordinates(from, to);
       segments.push({
         id: `segment-${i}`,
+        origin: from,
+        destination: to,
         coordinates,
         distance,
-        duration
+        duration,
+        polyline: `${from.lng},${from.lat};${to.lng},${to.lat}`,
+        steps: [step]
       });
     }
 

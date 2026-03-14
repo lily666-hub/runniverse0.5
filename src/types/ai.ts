@@ -44,6 +44,8 @@ export interface AIContext {
     address?: string;
     district?: string;
     safetyLevel?: number;
+    currentLocation?: any;
+    recentLocations?: any[];
   };
   userContext: {
     gender?: string;
@@ -54,6 +56,8 @@ export interface AIContext {
     demographics?: any;
     runningHistory?: any;
     achievements?: any;
+    userId?: string;
+    profile?: any;
   };
   safetyContext: {
     timeOfDay?: string;
@@ -65,6 +69,8 @@ export interface AIContext {
       phone: string;
       relationship: string;
     }>;
+    riskLevel?: string;
+    safetyScore?: number;
   };
   userPreferences?: any;
   userHistory?: any[];
@@ -90,6 +96,7 @@ export interface AIContext {
   activeChallenge?: any;
   currentRoute?: any;
   createdAt: Date;
+  timestamp?: Date;
 }
 
 export interface SafetyProfile {

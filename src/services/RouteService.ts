@@ -156,7 +156,7 @@ export class RouteService {
       totalDistance: parseInt(path.distance) || 0,
       totalDuration: parseInt(path.duration) || 0,
       bounds: this.calculateBounds(coordinates),
-      createdAt: new Date()
+      createdAt: new Date().toISOString()
     };
   }
 
@@ -208,13 +208,13 @@ export class RouteService {
    * @returns 边界对象
    */
   private calculateBounds(coordinates: [number, number][]): {
-    northeast: { latitude: number; longitude: number };
-    southwest: { latitude: number; longitude: number };
+    northeast: { lat: number; lng: number };
+    southwest: { lat: number; lng: number };
   } {
     if (coordinates.length === 0) {
       return {
-        northeast: { latitude: 0, longitude: 0 },
-        southwest: { latitude: 0, longitude: 0 }
+        northeast: { lat: 0, lng: 0 },
+        southwest: { lat: 0, lng: 0 }
       };
     }
 
@@ -231,8 +231,8 @@ export class RouteService {
     });
 
     return {
-      northeast: { latitude: maxLat, longitude: maxLng },
-      southwest: { latitude: minLat, longitude: minLng }
+      northeast: { lat: maxLat, lng: maxLng },
+      southwest: { lat: minLat, lng: minLng }
     };
   }
 
