@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { RouteAgent } from '../../components/ai/agents/RouteAgent';
 import ChatHistory, { ChatHistoryItem } from '../../components/ai/ChatHistory';
+import { AIMascot } from '../../components/ai/AIMascot';
 import type { AIMessage } from '../../types/ai';
 import { useAuthStore } from '../../store/authStore';
 import { useGeolocation } from '../../hooks/useGeolocation';
@@ -188,11 +189,14 @@ export const RouteRecommendation: React.FC = () => {
         </div>
       </div>
 
-      {/* 左上角浮窗：位置、偏好、天气信息 - 保持不变 */}
+      {/* AI吉祥物 */}
+      <AIMascot position="bottom-right" size="medium" />
+
+      {/* 左上角浮窗：位置、偏好、天气信息 - 缩小尺寸 */}
       {showInfoPanel && (
-        <div className="fixed top-20 left-4 z-50 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-4 w-80 max-h-[calc(100vh-6rem)] overflow-y-auto">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-900">跑步信息</h3>
+        <div className="fixed top-20 left-4 z-40 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 w-64 max-h-[calc(100vh-6rem)] overflow-y-auto">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-gray-900">跑步信息</h3>
             <button
               onClick={toggleInfoPanel}
               className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -200,66 +204,65 @@ export const RouteRecommendation: React.FC = () => {
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* 当前位置 */}
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-4 h-4 text-blue-600" />
+            <div className="flex items-start space-x-2">
+              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-3 h-3 text-blue-600" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold text-gray-900 mb-1">当前位置</h4>
-                <p className="text-sm text-gray-700 truncate">{userLocation?.address || '获取位置中...'}</p>
-                <p className="text-xs text-gray-500">
+                <h4 className="text-xs font-semibold text-gray-900 mb-0.5">当前位置</h4>
+                <p className="text-xs text-gray-700 truncate">{userLocation?.address || '获取位置中...'}</p>
+                <p className="text-[10px] text-gray-500">
                   坐标: {userLocation ? `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}` : '--'}
                 </p>
                 {locationError && (
-                  <p className="text-xs text-orange-500 flex items-center mt-1">
-                    <Navigation className="w-3 h-3 mr-1" />
-                    使用默认位置，建议允许浏览器定位获取准确位置
+                  <p className="text-[10px] text-orange-500 flex items-center mt-0.5">
+                    <Navigation className="w-2 h-2 mr-1" />
+                    使用默认位置
                   </p>
                 )}
               </div>
             </div>
 
             {/* 偏好设置 */}
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <Star className="w-4 h-4 text-yellow-600" />
+            <div className="flex items-start space-x-2">
+              <div className="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Star className="w-3 h-3 text-yellow-600" />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-gray-900 mb-2">偏好设置</h4>
-                <div className="space-y-1">
+                <h4 className="text-xs font-semibold text-gray-900 mb-1">偏好设置</h4>
+                <div className="space-y-0.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">距离:</span>
-                    <span className="text-xs font-medium text-gray-900">5km</span>
+                    <span className="text-[10px] text-gray-600">距离:</span>
+                    <span className="text-[10px] font-medium text-gray-900">5km</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">安全级别:</span>
-                    <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">high</span>
+                    <span className="text-[10px] text-gray-600">安全级别:</span>
+                    <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full">high</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* 天气状况 */}
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <Compass className="w-4 h-4 text-blue-600" />
+            <div className="flex items-start space-x-2">
+              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Compass className="w-3 h-3 text-blue-600" />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-gray-900 mb-2">天气状况</h4>
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-orange-100 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                <h4 className="text-xs font-semibold text-gray-900 mb-1">天气状况</h4>
+                <div className="space-y-0.5">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-3 h-3 bg-orange-100 rounded-full flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
                     </div>
-                    <span className="text-xs text-gray-700">21°C，多云</span>
+                    <span className="text-[10px] text-gray-700">21°C，多云</span>
                   </div>
-                  <p className="text-xs text-gray-500">湿度: 68% | 风速: 18 km/h</p>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-600">适宜度:</span>
-                    <span className="text-xs text-green-600 font-medium">72%</span>
-                    <span className="text-xs text-gray-600">舒适的跑步天气</span>
+                  <p className="text-[10px] text-gray-500">湿度: 68% | 风速: 18 km/h</p>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-[10px] text-gray-600">适宜度:</span>
+                    <span className="text-[10px] text-green-600 font-medium">72%</span>
                   </div>
                 </div>
               </div>
@@ -272,10 +275,10 @@ export const RouteRecommendation: React.FC = () => {
       {!showInfoPanel && (
         <button
           onClick={toggleInfoPanel}
-          className="fixed top-20 left-4 z-50 bg-white/95 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-all"
+          className="fixed top-20 left-4 z-40 bg-white/95 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-all"
           title="显示跑步信息"
         >
-          <Menu className="w-5 h-5 text-gray-600" />
+          <Menu className="w-4 h-4 text-gray-600" />
         </button>
       )}
 

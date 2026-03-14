@@ -81,7 +81,7 @@ export class EnhancedGPSService extends EventEmitter {
       accuracy: 0,
       updateFrequency: 0,
       batteryUsage: 0,
-      signalStrength: 'unknown',
+      signalStrength: 'poor',
       lastUpdateTime: 0,
       totalUpdates: 0,
       averageAccuracy: 0,

@@ -9,6 +9,7 @@ import { imageAnalysisService } from '../../services/ai/imageAnalysisService';
 import type { AIMessage, AIConversation, AIResponse, ImageUploadResponse } from '../../types/ai';
 import ImageUpload from './ImageUpload';
 import ImagePreview from './ImagePreview';
+import { AIMascot } from './AIMascot';
 
 interface ChatInterfaceProps {
   conversationId?: string;

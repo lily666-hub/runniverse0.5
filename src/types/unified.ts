@@ -2,8 +2,17 @@
  * GPS与AI智能体功能深度整合的统一类型定义
  */
 
-import type { GPSPosition } from './gps';
-import type { AIContext, AIResponse } from './ai';
+import type { GPSPosition as GPSPositionType } from './gps';
+import type { AIContext as AIContextType, AIResponse } from './ai';
+
+// 重新导出类型，避免命名冲突
+export type AIContext = AIContextType;
+export type GPSPosition = GPSPositionType;
+
+// 导出兼容类型
+export type UserContext = AIContextType['userContext'];
+export type LocationContext = AIContextType['locationData'];
+export type SafetyContext = AIContextType['safetyContext'];
 
 // ==================== 基础数据类型 ====================
 
@@ -14,7 +23,7 @@ export interface GPSData {
   altitude?: number;
   speed?: number;
   heading?: number;
-  timestamp: number;
+  timestamp: number | Date;
 }
 
 export interface AIContextData {
@@ -160,6 +169,7 @@ export interface WaypointData {
 }
 
 export interface NavigationGuidance {
+  type?: string;
   instruction: string;
   distance: number;
   direction: 'straight' | 'left' | 'right' | 'u-turn';
@@ -183,7 +193,7 @@ export interface SmartNavigationData {
 
 export interface SafetyAlert {
   id: string;
-  type: 'traffic' | 'weather' | 'crime' | 'medical' | 'environmental';
+  type: 'traffic' | 'weather' | 'crime' | 'medical' | 'environmental' | 'safety';
   severity: 'low' | 'medium' | 'high' | 'critical';
   location: GPSData;
   message: string;
@@ -279,7 +289,7 @@ export interface RouteProgress {
 export interface AIAssistantState {
   isActive: boolean;
   conversationHistory: ConversationMessage[];
-  currentContext: AIContext;
+  currentContext: AIContext | AIContextData;
   suggestions: string[];
   voiceEnabled: boolean;
 }
@@ -682,37 +692,3 @@ export interface AIRunningAssistantProps {
   onGuidanceReceived?: (guidance: NavigationGuidance) => void;
   onEmergencyAlert?: (alert: SafetyAlert) => void;
 }
-
-// ==================== 导出所有类型 ====================
-
-export type {
-  // 基础类型
-  GPSData,
-  AIContextData,
-  FusedData,
-  
-  // 配置类型
-  UnifiedTrackingOptions,
-  GPSTrackingOptions,
-  AITrackingOptions,
-  FusionOptions,
-  
-  // 导航类型
-  SmartNavigationSession,
-  NavigationGuidance,
-  SmartNavigationData,
-  
-  // 安全类型
-  SafetyAlert,
-  EmergencyResponse,
-  
-  // 推荐类型
-  SmartRouteRecommendation,
-  AIRouteAnalysis,
-  
-  // 事件类型
-  UnifiedServiceEvent,
-  
-  // 组件Props类型
-  AIRunningAssistantProps
-};

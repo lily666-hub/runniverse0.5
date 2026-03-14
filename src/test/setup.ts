@@ -76,8 +76,8 @@ Object.defineProperty(CSS, 'supports', {
 });
 
 // 模拟 requestAnimationFrame
-global.requestAnimationFrame = vi.fn(cb => setTimeout(cb, 16));
-global.cancelAnimationFrame = vi.fn(id => clearTimeout(id));
+global.requestAnimationFrame = vi.fn(cb => setTimeout(cb, 16) as any) as any;
+global.cancelAnimationFrame = vi.fn(id => clearTimeout(id as any));
 
 // 模拟 localStorage
 const localStorageMock = {

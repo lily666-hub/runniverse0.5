@@ -457,7 +457,10 @@ export class LocationService {
     );
 
     return {
+      conversationId: '',
       locationData: {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
         currentLocation: {
           latitude: currentLocation.latitude,
           longitude: currentLocation.longitude,
@@ -479,16 +482,19 @@ export class LocationService {
       },
       safetyContext: {
         currentSafetyScore: safetyScore,
-        timeOfDay: new Date().getHours(),
+        timeOfDay: this.getTimeOfDayString(new Date().getHours()),
         isNightTime: this.isNightTime(),
-        weatherConditions: 'unknown' // 可以集成天气API
+        weatherConditions: 'unknown', // 可以集成天气API
+        riskLevel: safetyScore > 7 ? 'low' : safetyScore > 5 ? 'medium' : 'high',
+        safetyScore
       },
       userContext: {
         userId,
         activityType: 'running',
         sessionDuration: this.calculateSessionDuration(locations)
-      }
-    };
+      },
+      createdAt: new Date()
+    } as Partial<AIContext>;
   }
 
   /**
@@ -599,6 +605,16 @@ export class LocationService {
   }
 
   /**
+   * 获取时间段字符串
+   */
+  private getTimeOfDayString(hour: number): string {
+    if (hour >= 6 && hour < 12) return 'morning';
+    if (hour >= 12 && hour < 18) return 'afternoon';
+    if (hour >= 18 && hour < 22) return 'evening';
+    return 'night';
+  }
+
+  /**
    * 转换为GPS数据格式
    */
   convertToGPSData(location: RealtimeLocation): GPSData {
@@ -609,9 +625,7 @@ export class LocationService {
       accuracy: location.accuracy,
       speed: location.speed || 0,
       heading: location.heading || 0,
-      timestamp: location.timestamp,
-      totalDistance: 0, // 需要外部计算
-      isMoving: (location.speed || 0) > 0.5 // 0.5 km/h 阈值
+      timestamp: location.timestamp instanceof Date ? location.timestamp.getTime() : Number(location.timestamp)
     };
   }
 

@@ -249,15 +249,10 @@ export class PerformanceMonitor {
 
     return {
       generationTime: generationMetric?.duration || 0,
-      aiResponseTime: aiMetric?.duration,
-      optimizationTime: optimizationMetric?.duration || 0,
-      securityAnalysisTime: securityMetric?.duration,
-      totalWaypoints: generationMetric?.metadata?.totalWaypoints || 0,
-      finalWaypoints: generationMetric?.metadata?.finalWaypoints || 0,
-      optimizationIterations: optimizationMetric?.metadata?.iterations || 0,
-      qualityScore: generationMetric?.metadata?.qualityScore || 0,
-      distanceAccuracy: generationMetric?.metadata?.distanceAccuracy || 0,
-      memoryUsage: memoryUsage?.used
+      apiResponseTime: aiMetric?.duration || 0,
+      loadTime: generationMetric?.duration || 0,
+      renderTime: 0,
+      cacheHitRate: 0
     };
   }
 

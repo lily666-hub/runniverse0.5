@@ -6,6 +6,8 @@ export interface Waypoint {
   name: string;
   lat: number;
   lng: number;
+  latitude?: number;
+  longitude?: number;
   desc: string;
   order: number;
   elevation?: number;
@@ -22,7 +24,7 @@ export interface NavigationStep {
   distance: number;
   duration: number;
   polyline: string;
-  action?: 'straight' | 'turn_left' | 'turn_right' | 'u_turn' | 'arrive';
+  action?: 'straight' | 'turn_left' | 'turn_right' | 'u_turn' | 'arrive' | 'start' | 'finish';
   road?: string;
   orientation?: string;
   assistantAction?: string;
@@ -30,6 +32,7 @@ export interface NavigationStep {
 
 // 路线段类型
 export interface RouteSegment {
+  id?: string;
   origin: Waypoint;
   destination: Waypoint;
   distance: number;
@@ -38,14 +41,20 @@ export interface RouteSegment {
   steps: NavigationStep[];
   trafficStatus?: 'smooth' | 'slow' | 'congested' | 'severe';
   safetyLevel?: 'high' | 'medium' | 'low';
+  coordinates?: [number, number][];
 }
 
 // 完整路线数据类型
 export interface RouteData {
+  id?: string;
+  name?: string;
+  waypoints?: Waypoint[];
   segments: RouteSegment[];
   steps: NavigationStep[];
   totalDistance: number;
   totalDuration: number;
+  distance?: number;
+  duration?: number;
   polyline: string;
   bounds?: {
     northeast: { lat: number; lng: number };
@@ -53,6 +62,7 @@ export interface RouteData {
   };
   createdAt?: string;
   routeId?: string;
+  paths?: any[];
 }
 
 // 导航状态类型
@@ -91,6 +101,7 @@ export interface VoiceNavigationConfig {
   pitch: number; // 0-2
   announceDistance: number; // 提前播报距离（米）
   repeatInterval: number; // 重复播报间隔（秒）
+  autoPlay?: boolean;
 }
 
 // 导航事件类型
@@ -106,6 +117,8 @@ export interface NavigationEvent {
 // 路线规划请求类型
 export interface RoutePlanRequest {
   waypoints: Waypoint[];
+  origin?: Waypoint;
+  destination?: Waypoint;
   strategy?: 'fastest' | 'shortest' | 'safest' | 'scenic';
   avoidTolls?: boolean;
   avoidHighways?: boolean;
@@ -129,7 +142,15 @@ export interface RoutePlanResponse {
     apiProvider: string;
     cacheHit: boolean;
   };
+  // 高德API响应字段
+  status?: string;
+  info?: string;
+  paths?: any[];
 }
+
+// 向后兼容的类型别名
+export type RouteRequest = RoutePlanRequest;
+export type RouteResponse = RoutePlanResponse;
 
 // CSV导入数据类型
 export interface CSVWaypointData {
